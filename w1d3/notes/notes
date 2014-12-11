@@ -1,0 +1,6 @@
+tap method: does nothing then return (really only useful for debugging); in rails called `returning(x) do |y|`
+exceptions will bubble up until stopped
+[detour into unix command line]
+hash.fetch(key) fails informatively if key does not exist
+sets are zero access arrays -- hashes without values
+

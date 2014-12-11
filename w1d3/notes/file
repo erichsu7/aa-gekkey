@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+puts 'Im always run'
+puts $PROGRAM_NAME
+
+if __FILE__ == $PROGRAM_NAME
+  puts 'Im run from cli'
+end

@@ -1,0 +1,3 @@
+# returns an array, with each element representing a line of
+# "movie-times.txt"
+# Note: Each element will end with '\n'
