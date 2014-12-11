@@ -5,15 +5,12 @@ class Game
 
   def recieve_secret_length(length)
     @word = Array.new(length, '_')
-    length
   end
 
   def merge(letters)
     # puts "merging #{@word} with #{letters}"
     @word.each_index do |i|
-      if letters[i] != '_'
-        @word[i] = letters[i]
-      end
+      @word[i] = letters[i] if letters[i] != '_'
     end
     @word
   end
@@ -51,8 +48,7 @@ class HumanPlayer
 
   def check_guess(letter)
     print "#{letter}? >> "
-    response = gets.chomp.gsub(' ', '_')
-    response = response[0...@length]
+    response = gets.chomp.gsub(' ', '_')[0...@length]
     response += '_' * (@length - response.length)
   end
 
@@ -77,24 +73,17 @@ class ComputerPlayer
     @dictionary = DICT.select { |el| el.length == length }
   end
 
-  def guess(method = :local)
-    if method == :local
-      local_freq = Hash.new(0)
-      @dictionary.each do |word|
-        word.split('').each do |char|
-          local_freq[char] += 1
-        end
+  def guess()
+    local_freq = Hash.new(0)
+    @dictionary.each do |word|
+      word.split('').each do |char|
+        local_freq[char] += 1
       end
-      local_freq = local_freq.sort_by { |k, v| v } .map { |k, v| k }
-      current_guess = (local_freq - @guessed).last
-    else
-      require 'set'
-      available_letters = Set.new
-      global_freq = %w(e t a o i n s h r d l c u m w f g y p b v k j x q z)
-      @dictionary.each { |word| available_letters.merge(word.split('')) }
-      current_guess = ((global_freq.select { |el| available_letters.include? el }) - @guessed).first
     end
-
+   
+    local_freq = local_freq.sort_by { |k, v| v } .map { |k, v| k }
+    current_guess = (local_freq - @guessed).last
+    
     @guessed << current_guess
     current_guess
   end
@@ -112,9 +101,7 @@ class ComputerPlayer
     guess_word.each_with_index do |position, i|
       next if position == '_'
       @dictionary.each do |word|
-        if word.split("")[i] != position
-          new_dictionary.delete(word)
-        end
+        new_dictionary.delete(word) if word.split("")[i] != position
       end
     end
     @dictionary = new_dictionary

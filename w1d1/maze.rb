@@ -6,6 +6,7 @@ class Maze
     end
   end
 
+  # for printing
   def to_s
     @maze.each do |line|
       s = ''
@@ -46,7 +47,7 @@ class Maze
     while !end_found do
         current_edge.each do |x, y|
           @maze[y][x] = n
-    adjacent(x, y).each do |test_x, test_y, test_char|
+          adjacent(x, y).each do |test_x, test_y, test_char|
           if test_char == ' '
             next_edge.push([test_x, test_y])
           elsif test_char == 'E'
@@ -63,7 +64,7 @@ class Maze
     # find ending space
     x, y = find_char('E')
 
-  # walk backwards, using smallest spaces
+    # walk backwards, using smallest spaces
     while @maze[y][x] != 0
       @maze[y][x] = 'X' unless @maze[y][x] == 'E'
         x, y = ((adjacent(x, y).select {|a, b, c| (c.is_a?(Integer) && (a != 0 && b != 0))}).sort_by { |a, b, c| c })[0][0..1]
