@@ -8,15 +8,11 @@ class Array
   end
 
   def two_sum
-    temp = []
-    (0...self.length - 1).each do |x|
-      (x + 1...self.length).each do |y|
-        temp << [x, y] if self[x] + self[y] == 0
-      end
-    end
-    temp
+    self.length.times.to_a.combination(2).select { |a, b| self[a] + self[b] == 0 }
   end
 end
+
+# p [-1, 0, 2, -2, 1].two_sum
 
 class ToH
   def initialize n
@@ -29,8 +25,8 @@ class ToH
   def run
     loop do
       print_towers
-      puts 'Enter move: '
-      command = gets.chomp.split(',').map { |i| i.to_i }
+      print 'Enter move: '
+      command = gets.chomp.split(' ').map { |i| i.to_i }
       move command[0], command[1]
       if won?
         puts "You won!"
@@ -42,13 +38,11 @@ class ToH
   def move a, b
     if @pile[a].empty?
       puts "There is nothing there."
-      return
-    end
-    if !@pile[b].empty? && @pile[a].last > @pile[b].last
+    elsif !@pile[b].empty? && @pile[a].last > @pile[b].last
       puts "You can't put a disk on a smaller one!"
-      return
+    else
+      @pile[b].push(@pile[a].pop)
     end
-    @pile[b].push(@pile[a].pop)
   end
 
   def print_towers
@@ -58,10 +52,8 @@ class ToH
   end
 
   def won?
-    if @pile[2].length == @size || @pile[3].length == @size
-      return true
-    end
-    false
+    return true if @pile[2].length == @size || @pile[3].length == @size
+    return false
   end
 end
 
@@ -217,4 +209,4 @@ end
 # p (1..7).to_a.median
 # p (1..8).to_a.median
 
-p concatenate(["Yay ", "for ", "strings!"])
+# p concatenate(["Yay ", "for ", "strings!"])
