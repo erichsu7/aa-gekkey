@@ -1,0 +1,8 @@
+Module mod_name:
+	def method
+Class class_name:
+	include mod_name
+class_name now has method
+
+extend to add class methods
+include to add instance methods
