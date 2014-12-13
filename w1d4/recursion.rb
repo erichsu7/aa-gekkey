@@ -184,12 +184,11 @@ def subsets(arr)
 end
 
 def subsets_rec(arr)
-  return [[]] if arr.size == 0
+  return [[]] if arr.empty?
   result = []
-  last_el = arr.last
   subsets_rec(arr[0..-2]).each do |el|
     result << el
-    result << el + [last_el]
+    result << el + [arr.last]
   end
   result
 end

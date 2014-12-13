@@ -22,7 +22,7 @@ class Game
     @players[1].recieve_secret_length(length)
 
     while @word.include? '_'
-      guess = @players[1].guess(:local)
+      guess = @players[1].guess
       response = @players[0].check_guess(guess)
       new_word = merge(response)
       puts new_word * ''
@@ -80,10 +80,9 @@ class ComputerPlayer
         local_freq[char] += 1
       end
     end
-   
     local_freq = local_freq.sort_by { |k, v| v } .map { |k, v| k }
-    current_guess = (local_freq - @guessed).last
     
+    current_guess = (local_freq - @guessed).last
     @guessed << current_guess
     current_guess
   end

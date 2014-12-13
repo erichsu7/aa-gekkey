@@ -75,11 +75,11 @@ class Game
       @board.render
       if winner = @board.won?
         puts "#{winner} won!"
-        break
+        return winner
       end
       if @board.draw?
         puts "draw!"
-        break
+        return nil
       end
 
       attempted_turn = @players[player].turn
@@ -98,6 +98,8 @@ class Game
 end
 
 class HumanPlayer
+  @@TYPE = 'human'
+  attr_reader :TYPE
   def reveal(board, chr)
     @chr = chr
   end
@@ -198,10 +200,12 @@ class ComputerPlayer
         end
       end
     end
+    # if you can fork, do it
     if potential_forks[@chr].count > 0
       return potential_forks[@chr].first
+    # if the oponent can for two seperate ways
+    # force a block
     elsif potential_forks[@o_chr].count > 1
-      # force a block
       test_board = @board.inspect
       possible_moves = []
       3.times do |x|
@@ -212,6 +216,7 @@ class ComputerPlayer
         end
       end
       return possible_moves.sample
+    # but if he can only fork in one way, block that fork
     elsif potential_forks[@o_chr].count > 0
       return potential_forks[@o_chr].first
     end
@@ -268,5 +273,7 @@ end
 # p board.won?
 # board.render
 
-game = Game.new(ComputerPlayer.new, ComputerPlayer.new)
-game.play
+loop do
+  game = Game.new(ComputerPlayer.new, ComputerPlayer.new)
+  break if game.play
+end
