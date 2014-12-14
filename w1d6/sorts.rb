@@ -19,7 +19,11 @@ def quick_sort(a)
   l, r, p = [], [], a.shift
   # I did this the other way
   a.each { |i| (i < p ? l : r) << i }
+<<<<<<< HEAD
   quick_sort(l) + [p] + quick_sort(r)
+=======
+  quick_sort(l + [p]) + quick_sort(r)
+>>>>>>> 615048553b036f7d4c3041473a0fe863b0a91d34
 end
 
 def merge_sort(a)

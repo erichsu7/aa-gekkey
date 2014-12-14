@@ -35,10 +35,14 @@ end
 
 class WordNode < Node
   def initialize(map, *args)
+<<<<<<< HEAD
     @map = map # for easy access to the other nodes
                # I could store the other nodes in self.adjacent, insted of their index
                # but then I would have to seach for them manually, instead of abusing
                # hash lookup speeds
+=======
+    @map = map
+>>>>>>> 615048553b036f7d4c3041473a0fe863b0a91d34
     super(*args)
   end
 
