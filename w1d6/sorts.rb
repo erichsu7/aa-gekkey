@@ -1,7 +1,3 @@
-# bubble sort
-# quick  sort
-# merge  sort
-# insert sort
 # tim    sort
 
 def bubble_sort(a)
@@ -19,11 +15,7 @@ def quick_sort(a)
   l, r, p = [], [], a.shift
   # I did this the other way
   a.each { |i| (i < p ? l : r) << i }
-<<<<<<< HEAD
   quick_sort(l) + [p] + quick_sort(r)
-=======
-  quick_sort(l + [p]) + quick_sort(r)
->>>>>>> 615048553b036f7d4c3041473a0fe863b0a91d34
 end
 
 def merge_sort(a)
@@ -34,7 +26,7 @@ def merge_sort(a)
   a + l + r
 end
 
-def insert_sort(a)
+def insert_sort(a) # runs backwards right now
   p a
   (a.size-1).times do |i|
     i.downto(0) do |p|
