@@ -1,27 +1,28 @@
 require 'set'
 
-class Map
+class Node
+  attr_accessor :parent, :adjacent
+  def initialize(parent = nil, adjacent = [])
+    @parent, @adjacent = parent, adjacent
+  end
+end
+
+class NopeMap
+  # a hash of node objects
   def initialize(set)
-    @store = set.to_a.map { |word| [word, [[], nil]] } .to_h
+    @store = set.to_a.map { |object| [object, Node.new]} .to_h
   end
 
-  def optimize_for!(word)
-    toss_wrong_sized_words(word.size)
-    true
-  end
-
-  def prune!
+  def prune! (&blk)
     @store.each do |k, v|
-      @store.delete(k) if v[1].nil?
+      @store.delete(k) if blk.call(k, v)
     end
   end
 
   def deep_copy
-    new_dict = self.class.new({})
+    new_dict = self.class.new(Set.new)
     self.each do |k, v|
-      new_dict[k] = []
-      new_dict[k] << self[k][0].dup
-      new_dict[k] << self[k][1]
+      new_dict[k] = self[k].dup
     end
     new_dict
   end
@@ -41,19 +42,50 @@ class Map
   def keys
     @store.keys
   end
+end
 
-  def each &block
-    @store.each &block
+class WordMap < NopeMap
+  # a nodemap, with each node a string
+  def set_start_word(word)
+    self.optimize_for!(word)
+    self[word].adjacent = adjacent_words(word)
   end
 
-  def select &block
-    @store.select &block
+  def map_adjacent(word, depth)
+    self[word].adjacent = adjacent_words(word).each do |other_word|
+    self[word].parent = depth if self[word].parent && self[word].parent < depth
+    end.to_a
+  end
+
+  def closest_word(word)
+    raise "#{word} not indexed" if self[word].nil?
+    self[word].parent
+  end
+
+  def optimize_for!(word)
+    toss_wrong_sized_words(word.size) && true
   end
 
   private
 
   def toss_wrong_sized_words(size)
     @store = @store.select { |el| el.length == size }
+  end
+
+  def adjacent_words(word)
+    result = []
+
+    word.split('').each_with_index do |char, i|
+      ('a'..'z').each do |n_char|
+        next if char == n_char
+        test_word = word.dup
+        test_word[i] = n_char
+        if self.include? test_word
+          result << test_word
+        end
+      end
+    end
+    result
   end
 end
 
@@ -64,72 +96,44 @@ class WordChain
   end
 
   def map_path(start_word, end_word)
-    gen_map(start_word, end_word) unless @map.has_key?(start_word)
-    return "no path found" unless @map[start_word].include?(end_word)
+    @map = WordMap.new(@dictionary)
+    @map.optimize_for!(start_word)
+    @map.set_start_word(start_word)
+
+    gen_map(start_word, end_word)
+    return "no path found" unless @map.include?(end_word)
     gen_path(start_word, end_word)
   end
 
   def gen_map(word, end_word)
-    @map = Map.new(@dictionary)
-    @map.optimize_for!(word)
-    @map[word][0] = adjacent_words(word)
-    @map[word][1] = 0
-
     mapped = Set.new
-    map_next = map[word][0]
-    n = 1
+    mapped.add(word)
+    queue = @map[word].adjacent
+    n = 0
 
     until mapped.include? end_word
-      map_next.each do |el|
+      next_queue = []
+      queue.each do |el|
         next if mapped.include? el
-
-        adjacent = adjacent_words(el)
-        @map[el][0] += adjacent
-        map_next += adjacent
-        @map[el][1] = (@map[el][1] && @map[el][1] <= n) ? @map[el][1] : n
+        next_queue += @map.map_adjacent(el, n).reject { |x| mapped.include?(x) }
         mapped.add el
       end
+      queue = next_queue
       n += 1
     end
 
-    @map.prune!
+    @map.prune! { |k, v| v.adjacent == [] }
   end
 
   def gen_path(start_word, end_word)
     chain = [end_word]
-    while end_word != start_word
-      closest, closest_word = @map[start_word][end_word][1], end_word
-      @map[start_word][end_word][0].each do |next_word|
-        if @map[start_word][next_word][1] < closest
-          closest = @map[start_word][next_word][1]
-          closest_word = next_word
-        end
-      end
-      end_word = closest_word
-      chain << end_word
+    until end_word.nil?
+      chain = [@map.closest_word(end_word)] + chain
+      end_word = chain.first
     end
-    chain.reverse
+    chain
   end
-
-  private
-
-  def adjacent_words(word)
-    result = []
-
-    word.split('').each_with_index do |char, i|
-      ('a'..'z').each do |n_char|
-        next if char == n_char
-        test_word = word.dup
-        test_word[i] = n_char
-        if @dictionary.include? test_word
-          result << test_word
-        end
-      end
-    end
-    result
-  end
-
 end
 
 wc = WordChain.new("./wordsEn.txt")
-puts wc.map_path('cold', 'warm')
+puts wc.map_path('duck', 'ruby')
