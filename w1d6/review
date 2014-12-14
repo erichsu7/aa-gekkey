@@ -1,0 +1,44 @@
+day one:
+	objects:
+		arrays, strings, hashes, enumerables sets
+		everything is an object
+		a variable is just a pointer to an object
+		setting a variable equal to another, and then modifying the original
+			can have unexpected consequences
+day two:
+	methods:
+		a method is its call
+		methods are not objects
+		however, procs are objects that behave like methods
+	iteration
+	symbols, strings, input/output
+	a bit of style
+	classes
+day three:
+	more style; refactoring
+	scope:
+		scope is just complicated, and has different rules for methods and objects
+	object oriented design; hangman:
+		game class that asked an instance of human or computer player for letters,
+			then asked the other if that was correct
+	eight queens:
+		a proper recursion problem
+day four:
+	a full day for recursion, with a bit on blocks in the beginning
+	lots of improper uses of recursion
+	word_chains:
+		pathfinding between words connected by one similar letter
+		dijkstra's algorithm works
+		depth first search with good heuristics would be faster
+		good heuristics are difficult to come up with
+day five:
+	more complex data structures, like trees
+	pathfinding through tree generation
+		like dijkstra's algorithm, but measuring squares multiple times if
+			reached from a different point
+	decision trees for tic tac toe:
+		I didn't really understand this one
+		I could follow the instruction, but I oculdn't make my own
+day six:
+	git
+	reviewing word chains, refactoring, sorts
