@@ -15,12 +15,12 @@ class Game
 
   def run
     @board = setup
-    system('clear')
+    puts "\e[H\e[2J"
     puts @board.to_s(@cursor)
 
     loop do
       status = take_input
-      system('clear')
+      puts "\e[H\e[2J"
       puts @board.to_s(@cursor)
       if status == false
         break
@@ -93,7 +93,7 @@ class Game
     yaml_minesweeper = nil
 
     loop do
-      print "[l]oad game or [N]ew game? "
+      puts "[l]oad game or [N]ew game? "
       case read_char
       when 'l'
         puts "Enter filename: "
