@@ -1,30 +1,40 @@
-class Piece
-  # all common piece methods and variables
-end
+require_relative 'board'
+require_relative 'human_player'
 
-class SteppingPiece < Piece
-  # valid_moves method for knight and king
-  def knight(pos)
-    # here be linear algebra !
-    base_moves = [[1] * 4, [2] * 4]
-    base_moves = base_moves.transpose + base_moves.reverse.transpose
-    modifier = [1, -1].repeated_permutation(2).to_a * 2
-    moves = base_moves.each_with_index.map do |v, i|
-      [pos[0] + v[0] * modifier[i][0], pos[1] + v[1] * modifier[i][1]]
+class Game
+  def initialize(player1, player2)
+    # input here to set up players; pass board to AI
+    @player1, @player2 = player1, player2
+    @board = Board.new
+    @player1.board = @player2.board = @board
+    @player1.color = :red
+    @player2.color = :blue
+  end
+
+  def run
+    color = {@player1 => :red, @player2 => :blue}
+    player = @player1
+
+    until @board.checkmate?(color[player])
+      begin
+        @board.move(color[player], *player.turn)
+      rescue InvalidMoveError => e
+        player.set_error(e.message)
+        retry
+      end
+      player = toggle(player)
     end
-    moves.select { |x, y| (0..7).include?(x) && (0..7).include?(y) }
+    player.render
+    winner = color[toggle(player)]
+    puts "#{winner} wins"
+  end
+
+  def toggle(player)
+    player == @player1 ? @player2 : @player1
   end
 end
 
-class SlidingPiece < Piece
-  # valid_moves methods for bishop, rook, queen
-  #   perpendicular moves
-  #   ([x] * 8).zip((0...8).to_a) + (0...8).to_a.zip([y] * 8)
-  #   diagonal moves
-  #   both
-      + (0...8).to_a.zip((0...8).to_a).map { |a, b| [a + x - y, b] } \
-      + (0...8).to_a.zip((0...8).to_a.reverse).map { |a, b| [a + x - (7 - y), b] }
-end
-
-class Queen < SlidingPiece
+if $PROGRAM_NAME == __FILE__
+  game = Game.new(HumanPlayer.new("A"), HumanPlayer.new("B"))
+  game.run
 end

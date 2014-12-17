@@ -3,7 +3,6 @@
 
 # Tile handles a single tile
 require 'yaml'
-require 'io/console'
 require_relative './board'
 require_relative './tile'
 require_relative './keys'
