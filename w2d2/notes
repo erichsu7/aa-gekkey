@@ -1,8 +1,0 @@
-code should be hard to read; anyone who doesn't understand it should leave it alone
-this is, of course, facetious, but hinting at a truth
-it is good to have complex, elegant private functions, and verbose, well-named public ones
-
-avoid hard-coding when possible
-exceptions can be used for control flow, [should they?]
-
-
