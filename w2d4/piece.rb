@@ -11,6 +11,57 @@ class Piece
     @board[pos] = self
   end
 
+  def valid_moves
+    if @moved or !jumps.empty?
+      jumps
+    elsif another_can_jump?
+      raise InvalidMoveError.new('If can jump, must jump')
+    else
+      slides
+    end
+  end
+
+  def move(dest)
+    moves = valid_moves
+    check_move(moves, dest)
+    perform_move!(moves, dest)
+
+    if moves[dest].nil? # did not jump
+      return end_turn
+    end
+
+    moves = valid_moves # if jumped, check if can jump again
+    if moves.empty?
+      return end_turn
+    else
+      return :continue
+    end
+  end
+
+  protected
+
+  def jumps
+    directions.map do |dir|
+      test_pos = apply_offset(dir)
+      next if !in_bounds(test_pos) || !in_bounds(apply_offset(dir, test_pos)) || @board[test_pos].nil?
+      next if @board[test_pos].color == color
+      if @board[apply_offset(dir, test_pos)].nil?
+        [apply_offset(dir, test_pos), test_pos]
+      end
+    end.compact.to_h
+  end
+
+  private
+
+  def another_can_jump?
+    @board.pieces.each do |piece|
+      if piece.color == color && !piece.jumps.empty?
+        return true
+      end
+    end
+    false
+  end
+
   def apply_offset(offset, pos = @pos)
     [pos[0] + offset[0], pos[1] + offset[1]]
   end
@@ -37,55 +88,8 @@ class Piece
     end.compact.to_h
   end
 
-  def jumps
-    directions.map do |dir|
-      test_pos = apply_offset(dir)
-      next if !in_bounds(test_pos) || !in_bounds(apply_offset(dir, test_pos)) || @board[test_pos].nil?
-      next if @board[test_pos].color == color
-      if @board[apply_offset(dir, test_pos)].nil?
-        [apply_offset(dir, test_pos), test_pos]
-      end
-    end.compact.to_h
-  end
-
-  def another_can_jump?
-    @board.pieces.each do |piece|
-      if piece.color == color && !piece.jumps.empty?
-        return true
-      end
-    end
-    false
-  end
-
-  def valid_moves
-    if @moved or !jumps.empty?
-      jumps
-    elsif another_can_jump?
-      raise InvalidMoveError.new('If can jump, must jump')
-    else
-      slides
-    end
-  end
-
   def king_me?
     pos[0] == (color == :white ? 0 : 7)
-  end
-
-  def move(dest)
-    moves = valid_moves
-    check_move(moves, dest)
-    perform_move(moves, dest)
-
-    if moves[dest].nil? # did not jump
-      return end_turn
-    end
-
-    moves = valid_moves # if jumped, check if can jump again
-    if moves.empty?
-      return end_turn
-    else
-      return :continue
-    end
   end
 
   def check_move(moves, dest)
@@ -102,7 +106,7 @@ class Piece
     end
   end
 
-  def perform_move(moves, dest)
+  def perform_move!(moves, dest)
     @board[dest] = self
     @board[moves[dest]] = nil unless moves[dest].nil?
     @board[pos] = nil

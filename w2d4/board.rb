@@ -24,6 +24,18 @@ class Board
     @tiles.flatten.compact
   end
 
+  def won?
+    found = {white: false, black: false}
+
+    pieces.each do |piece|
+      found[piece.color] = true
+    end
+
+    found.values.include?(false)
+  end
+  
+  private
+
   def setup_pieces
     @tiles.each_with_index do |row, x|
       row.each_index do |y|
@@ -33,15 +45,5 @@ class Board
         Piece.new([x, y], color, self)
       end
     end
-  end
-
-  def won?
-    found = {white: false, black: false}
-
-    pieces.each do |piece|
-      found[piece.color] = true
-    end
-
-    found.values.include?(false)
   end
 end

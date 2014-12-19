@@ -12,6 +12,16 @@ class Player
     move_piece
   end
 
+  def reset_turn
+    @moved = nil
+  end
+
+  def show_error(message)
+    @error = message
+  end
+
+  private
+
   def get_input
     @move = []
     @move << @moved unless @moved.nil?
@@ -55,14 +65,6 @@ class Player
       @moved = to
       raise TurnNotOver
     end
-  end
-
-  def show_error(message)
-    @error = message
-  end
-
-  def reset_turn
-    @moved = nil
   end
 
   def render
