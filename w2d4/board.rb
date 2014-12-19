@@ -20,6 +20,10 @@ class Board
     @tiles
   end
 
+  def pieces
+    @tiles.flatten.compact
+  end
+
   def setup_pieces
     @tiles.each_with_index do |row, x|
       row.each_index do |y|
@@ -34,10 +38,8 @@ class Board
   def won?
     found = {white: false, black: false}
 
-    @tiles.each do |row|
-      row.each do |tile|
-        found[tile.color] = true unless tile.nil?
-      end
+    pieces.each do |piece|
+      found[piece.color] = true
     end
 
     found.values.include?(false)

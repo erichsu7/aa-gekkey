@@ -38,6 +38,7 @@ class Game
       @player[i].reset_turn
       i *= -1
     end
+    puts "#{player[i * -1]} won!"
   end
 end
 

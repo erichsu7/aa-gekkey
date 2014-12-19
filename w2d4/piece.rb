@@ -49,11 +49,9 @@ class Piece
   end
 
   def another_can_jump?
-    @board.tiles.each do |row|
-      row.each do |tile|
-        if !tile.nil? && tile.color == color && !tile.jumps.empty?
-          return true
-        end
+    @board.pieces.each do |piece|
+      if piece.color == color && !piece.jumps.empty?
+        return true
       end
     end
     false
@@ -69,36 +67,52 @@ class Piece
     end
   end
 
+  def king_me?
+    pos[0] == (color == :white ? 0 : 7)
+  end
+
   def move(dest)
     moves = valid_moves
-    unless moves.has_key?(dest) # move is possible
-      if moves.first[1].nil? # move is a slide
-        raise InvalidMoveError.new('cannot move to there') 
-      else
-        raise InvalidMoveError.new('If can jump, must jump') 
+    check_move(moves, dest)
+    perform_move(moves, dest)
+
+    if moves[dest].nil? # did not jump
+      return end_turn
+    end
+
+    moves = valid_moves # if jumped, check if can jump again
+    if moves.empty?
+      return end_turn
+    else
+      return :continue
+    end
+  end
+
+  def check_move(moves, dest)
+    if !moves.has_key?(dest) # move is impossible
+      if @pos == dest
+        raise InvalidMoveError.new('')
+      elsif moves.empty?
+        raise InvalidMoveError.new('that piece has no moves')
+      elsif moves.first[1].nil? # move is a slide
+        raise InvalidMoveError.new('cannot move to there')
+      else                      # move is a jump
+        raise InvalidMoveError.new('If can jump, must jump')
       end
     end
+  end
+
+  def perform_move(moves, dest)
     @board[dest] = self
     @board[moves[dest]] = nil unless moves[dest].nil?
     @board[pos] = nil
     @pos = dest
     @moved = true
+  end
 
-    if pos[0] == (color == :white ? 0 : 7)
-      @king = true
-    end
-
-    if moves[dest].nil? # did not jump
-      @moved = false
-      return :end
-    end
-
-    moves = valid_moves # if jumped, check if can jump again
-    if moves.empty?
-      @moved = false
-      return :end
-    else
-      return :continue
-    end
+  def end_turn
+    @moved = false
+    @king = true if king_me?
+    :end
   end
 end

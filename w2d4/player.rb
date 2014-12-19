@@ -8,17 +8,19 @@ class Player
   end
 
   def turn
-    get_move
+    get_input
     move_piece
   end
 
-  def get_move
+  def get_input
     @move = []
+    @move << @moved unless @moved.nil?
+    piece = nil
     until @move.size == 2
       render
       case c = read_char
       when "\r", ' '
-        @move << @cursor
+        @move << @cursor.dup
       when 'q'
         raise UserExit.new
       else
@@ -26,17 +28,17 @@ class Player
       end
     end
   end
-  
+
   def move_cursor(char)
     case char
     when "\e[A"
-      @cursor = [@cursor[0] - 1, @cursor[1]]
+      @cursor[0] -= 1
     when "\e[B"
-      @cursor = [@cursor[0] + 1, @cursor[1]]
+      @cursor[0] += 1
     when "\e[D"
-      @cursor = [@cursor[0], @cursor[1] - 1]
+      @cursor[1] -= 1
     when "\e[C"
-      @cursor = [@cursor[0], @cursor[1] + 1]
+      @cursor[1] += 1
     end
     [0, 1].each do |i|
       @cursor[i] = 0 if @cursor[i] < 0
@@ -51,7 +53,6 @@ class Player
     raise InvalidMoveError.new("You must keep jumping") if @moved && from != @moved
     if @board[from].move(to) == :continue
       @moved = to
-      @move.pop
       raise TurnNotOver
     end
   end
@@ -65,6 +66,7 @@ class Player
   end
 
   def render
+    # trust
     system('clear')
     @board.tiles.each_with_index do |row, i|
       row.each_with_index do |tile, j|
