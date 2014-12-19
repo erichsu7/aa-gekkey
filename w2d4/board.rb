@@ -1,6 +1,8 @@
+require_relative 'piece'
+
 class Board
   def initialize
-    @tiles = Array.new(10) { Array.new(10, nil) }
+    @tiles = Array.new(8) { Array.new(8, nil) }
     setup_pieces
   end
 
@@ -21,15 +23,23 @@ class Board
   def setup_pieces
     @tiles.each_with_index do |row, x|
       row.each_index do |y|
-        next if x.between?(4, 5)
+        next if x.between?(3, 4)
         next if (x + y) % 2 == 0
-        color = (x < 4 ? :black : :white )
+        color = (x < 3 ? :black : :white )
         Piece.new([x, y], color, self)
       end
     end
   end
 
   def won?
-    return false
+    found = {white: false, black: false}
+
+    @tiles.each do |row|
+      row.each do |tile|
+        found[tile.color] = true unless tile.nil?
+      end
+    end
+
+    found.values.include?(false)
   end
 end

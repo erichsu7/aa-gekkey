@@ -1,7 +1,7 @@
 class Piece
   OFFSETS = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
 
-  attr_reader :color, :pos
+  attr_reader :color, :pos, :king
   def initialize(pos, color, board)
     @pos, @color, @board, @king = pos, color, board, false
 
@@ -23,8 +23,8 @@ class Piece
     end
   end
 
-  def in_bounds(pos)
-    pos[0].between?(0, 9) && pos[1].between?(0, 9)
+  def in_bounds(test_pos)
+    test_pos[0].between?(0, 7) && test_pos[1].between?(0, 7)
   end
 
   def slides
@@ -38,9 +38,9 @@ class Piece
   end
 
   def jumps
-    OFFSETS.map do |dir|
+    directions.map do |dir|
       test_pos = apply_offset(dir)
-      next if !in_bounds(test_pos) || @board[test_pos].nil?
+      next if !in_bounds(test_pos) || !in_bounds(apply_offset(dir, test_pos)) || @board[test_pos].nil?
       next if @board[test_pos].color == color
       if @board[apply_offset(dir, test_pos)].nil?
         [apply_offset(dir, test_pos), test_pos]
@@ -71,12 +71,22 @@ class Piece
 
   def move(dest)
     moves = valid_moves
-    raise InvalidMoveError.new('cannot move to there') unless moves.has_key?(dest)
+    unless moves.has_key?(dest) # move is possible
+      if moves.first[1].nil? # move is a slide
+        raise InvalidMoveError.new('cannot move to there') 
+      else
+        raise InvalidMoveError.new('If can jump, must jump') 
+      end
+    end
     @board[dest] = self
     @board[moves[dest]] = nil unless moves[dest].nil?
     @board[pos] = nil
     @pos = dest
     @moved = true
+
+    if pos[0] == (color == :white ? 0 : 7)
+      @king = true
+    end
 
     if moves[dest].nil? # did not jump
       @moved = false
