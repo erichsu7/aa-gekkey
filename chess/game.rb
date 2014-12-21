@@ -36,20 +36,20 @@ class Game
 end
 
 if $PROGRAM_NAME == __FILE__
-  # RubyProf.start
+  RubyProf.start
 
-  # board = Board.new
+  board = Board.new
   # game = Game.new(
   #   HumanPlayer.new("not AI", board, :red),
   #   HumanPlayer.new("Human", board, :blue),
   #   board
   # )
   # game.run
+  1_000_000.times do
+    board[[0, 0]].piece.valid_moves
+  end
 
-  # result = RubyProf.stop
-  # printer = RubyProf::FlatPrinter.new(result)
-  # printer.print(STDOUT)
-
-  board = Board.new
-  p board[[1, 0]].piece.valid_moves
+  result = RubyProf.stop
+  printer = RubyProf::FlatPrinter.new(result)
+  printer.print(STDOUT)
 end

@@ -65,7 +65,6 @@ class King < SteppingPiece
     end
 
     valid
-    
   end
 end
 
@@ -80,27 +79,30 @@ class Pawn < Piece
   end
 
   def moved?
-    @pos[0] != (color == :red ? 1 : 6)
+    @pos[0] != (color == :black ? 1 : 6)
   end
 
   def direction
-    color == :red ? 1 : -1
+    color == :black ? 1 : -1
   end
 
   def moves
-    moves = []
+    @moves = Set.new
 
     distances.each do |distance|
       test_pos = apply_offset(@pos, [direction * distance, 0])
-      break unless @board[test_pos].nil?
-      moves << test_pos unless off_board?(test_pos)
+      break unless @board[test_pos].piece.nil?
+      @moves.add(test_pos) unless off_board?(test_pos)
     end
 
     [1, -1].each do |diag|
       test_pos = apply_offset(@pos, [direction, diag])
-      moves << test_pos if is_enemy?(test_pos) && !off_board?(test_pos)
+      next if off_board?(test_pos)
+      test_piece = @board[test_pos].piece
+      next if test_piece.nil?
+      @moves.add(test_pos) if test_piece.color != color
     end
 
-    moves
+    @moves
   end
 end
