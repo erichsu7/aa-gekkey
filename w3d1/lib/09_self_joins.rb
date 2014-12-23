@@ -145,9 +145,15 @@ def craiglockhart_to_sighthill
   # stop for the transfer, and the bus no. and company for the second bus.
   execute(<<-SQL)
     SELECT DISTINCT a.num, a.company, c.name, e.num, e.company
+
+    -- all stops accessible from route x
     FROM route a
     JOIN route AS b ON (a.company = b.company AND a.num = b.num)
+
+    -- that connect to stop y
     JOIN stops AS c ON (b.stop = c.id)
+
+    -- and are also accessible from route y
     JOIN route AS d ON (c.id = d.stop)
     JOIN route AS e ON (d.company = e.company AND d.num = e.num)
     WHERE a.stop = (
