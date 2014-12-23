@@ -26,6 +26,35 @@ class Square
     @protecting
   end
 
+  def render
+    if @piece.nil?
+      '  '
+    else
+      @piece.symbol + ' '
+    end
+  end
+
+  def inspect
+    s = "\n"
+    if @piece
+      s += "#{@piece.color} #{@piece.class} at #{@piece.pos}"
+    else
+      s += "empty space"
+    end
+    s += " threatened by:\n"
+
+    @lords.each do |lord, dir|
+      s += "\t #{lord.class} at #{lord.pos}\n"
+    end
+
+    s += "protected by:\n"
+
+    @protecting.each do |guard, dir|
+      s += "\t #{guard.class} at #{guard.pos}\n"
+    end
+    s
+  end
+
   # writers
   def place(other_piece)
     @piece = other_piece
@@ -47,8 +76,8 @@ class Square
     @colored[other_piece.color].delete(other_piece)
   end
 
-  def guard(other_piece, threat)
-    @protecting[other_piece] = threat
+  def guard(protector, threat, dir)
+    @protecting[protector] = [threat, dir]
   end
 
   def unguard(other_piece)

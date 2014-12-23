@@ -23,8 +23,9 @@ class Player
   end
 
   def render(game_ended = false)
-    system("clear")
-    tile = [:white, :black]
+#    system("clear")
+    puts
+    tile = [:light_black, :black]
 
     puts "  #{("a".."h").to_a.join(" ")}"
     8.times do |i|
@@ -47,33 +48,8 @@ class Player
     print "#{@name.colorize(color)}, what's your move? " unless game_ended
   end
 
-  def pieces #pieces array might be faster
-    @board.find{ |piece| piece.color == @color}
-  end
-
-  def moves
-    # this method is contrived
-    arr = []
-
-    pieces.each do |piece|
-      piece.moves.each do |move|
-        arr << [piece.pos, move]
-      end
-    end
-
-    arr
-  end
-
   def checkmate
     puts "Checkmate!".colorize(@color)
-  end
-
-  def enemy_color
-    toggle_color(@color)
-  end
-
-  def toggle_color(color)
-    color == :blue ? :red : :blue
   end
 
   def parse(index)

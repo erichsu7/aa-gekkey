@@ -17,7 +17,8 @@ class Game
 
     until false # @board.checkmate?(player.color)
       begin
-        @board.move(player.color, player.turn)
+        from, to = player.turn
+        @board[from].piece.move(to)
       rescue InvalidMoveError => e
         player.set_error(e.message)
         retry
@@ -39,15 +40,15 @@ if $PROGRAM_NAME == __FILE__
   RubyProf.start
 
   board = Board.new
-  # game = Game.new(
-  #   HumanPlayer.new("not AI", board, :red),
-  #   HumanPlayer.new("Human", board, :blue),
-  #   board
-  # )
-  # game.run
-  1_000_000.times do
-    board[[0, 0]].piece.valid_moves
-  end
+  game = Game.new(
+    HumanPlayer.new("not AI", board, :white),
+    HumanPlayer.new("Human", board, :black),
+    board
+  )
+  game.run
+  # 100_000.times do
+  #   board[[0, 3]].piece.valid_moves
+  # end
 
   result = RubyProf.stop
   printer = RubyProf::FlatPrinter.new(result)

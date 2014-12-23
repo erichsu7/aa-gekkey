@@ -15,7 +15,6 @@ class Piece
     @pos, @color, @board = pos, color, board
     @shielding, @blocking = Set.new, Hash.new
     @moves = nil
-    @blocked_by = Set.new
   end
 
   def enemy_color
@@ -38,7 +37,7 @@ class Piece
       end
     end
 
-    # tell pieces threatening your space to update thier moves
+    # tell pieces threatening your space to update their moves
     @board[@pos].lords.each do |other_piece, dir|
       other_piece.cast_ray(@pos.dup, dir)
     end
@@ -65,13 +64,14 @@ class Piece
     moves
 
     # block/shield pieces threatening square
+    recast = []
     @board[@pos].lords.each do |lord, dir|
-      test_pos = @pos.dup
-      until off_board?(test_pos)
-        @board[test_pos].relieve(lord)
-        test_pos = apply_offset(test_pos, dir)
-      end
-      lord.cast_ray(@pos.dup, dir)
+      lord.relieve(@pos.dup, dir)
+      recast << [lord, @pos.dup, dir]
+    end
+
+    recast.each do |lord, pos, dir|
+      lord.cast_ray(pos, dir)
     end
   end
 
@@ -79,14 +79,26 @@ class Piece
     @blocking[other_piece] = dir
   end
 
-  # def shield(
+  def inspect
+    "#{color} #{self.class} at #{pos}"
+  end
 
   def valid_moves # for AI
     # king defines its own valid moves
 
-    # if you're guarding the king, the only valid move is to kill the threat
+    # if you're guarding the king, the only valid moves are to kill the threat
+    #   or to move along the threatening ray
     if board.king[color].guards.include?(self)
-      return [board.king[color].guards[self]]
+      threat = board.king[color].guards[self]
+      valid = [threat.first.pos]
+      moves.each do |move|
+        # if the ray cast by the threat is going in the same direction as the
+        #   shadow you're casting, they are the same ray.
+        if board[move].lords[threat.first] == threat.last
+          valid << move
+        end
+      end
+      return valid
     end
 
     case board.king[color].lords(enemy_color).size
@@ -94,10 +106,14 @@ class Piece
       []
     when 1
       valid = []
-      threat = board.king[color].lords(enemy_color)[0]
+      threat = board.king[color].lords(enemy_color).first
       moves.each do |move|
-        if board[move].lords(enemy_color)[0] == threat ||
-          board[move].piece == threat.first.first
+        # if the square is threatened by the same piece that threatening your king
+        # and the ray is going in the same direction
+        # or the square's piece is the threat
+        if (board[move].lords(enemy_color).include?(threat.first) &&
+            board[move].lords(enemy_color)[threat.first] == threat.last) ||
+            board[move].piece == threat.first
           valid << move
         end
       end

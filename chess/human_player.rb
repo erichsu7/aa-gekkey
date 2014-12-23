@@ -26,6 +26,12 @@ class HumanPlayer < Player
       end
     end
 
+    #debug
+    p @board[@choices[0]]
+
+    # raise error and let Game handle it
+    valid_move?(@choices)
+
     @choices
   end
 
@@ -45,4 +51,16 @@ class HumanPlayer < Player
       @cursor[i] = 7 if @cursor[i] > 7
     end
   end
+
+  def valid_move?(move)
+    from, to = move
+    if @board[from].piece.nil?
+      raise InvalidMoveError.new("No piece there")
+    elsif @board[from].piece.color != @color
+      raise InvalidMoveError.new("Not your piece")
+    elsif !@board[from].piece.valid_moves.include?(to)
+      raise InvalidMoveError.new("#{@board[from].class} can't move there")
+    end
+  end
+
 end

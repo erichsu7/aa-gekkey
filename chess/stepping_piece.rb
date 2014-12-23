@@ -15,16 +15,15 @@ class SteppingPiece < Piece
     other_piece = @board[test_pos].piece
     if other_piece != nil
       if other_piece.color == color
-        @blocked_by.add(other_piece)
-      else
-        @moves.add(test_pos)
-        @board[test_pos].subject(self, dir)
+        other_piece.block(self, nil)
+        return
       end
-    else
-      @moves.add(test_pos)
     end
+    @moves.add(test_pos)
+    @board[test_pos].subject(self, dir)
   end
 
-  def cast_shield(test_pos, dir = nil)
+  def relieve(test_pos, dir = nil)
+    @board[test_pos].relieve(self)
   end
 end
