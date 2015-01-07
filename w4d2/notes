@@ -1,0 +1,13 @@
+http error codes
+	2xx - success
+	3xx - redirect
+	4xx - client did something wrong
+	5xx - server error
+> 2 year old information is perilous
+	4.2.0 : Dec 2014
+	4.1.0 : Apr 2014
+	4.0.0 : Jun 2013
+	3.x.x : Aug 2010 - Nov 2014
+	2.x.x : Dec 2007 - Aug 2011
+	1.0.0 : Dec 2005
+funny: a single model that consistently mis-spells input

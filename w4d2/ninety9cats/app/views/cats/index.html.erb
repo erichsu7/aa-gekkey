@@ -1,0 +1,21 @@
+<h1>Index of Cats</h1>
+
+  <% attrs = [:name, :age, :color, :sex] %>
+  <table>
+    <tr>
+      <% attrs.each do |thing| %>
+        <td><b><%= thing.to_s.capitalize %></b></td>
+      <% end %>
+    </tr>
+    <% @cats.each do |cat| %>
+      <tr>
+        <% attrs.each do |thing| %>
+          <% if thing == :name %>
+            <td><%= link_to cat.send(thing), cat_url(cat) %></td>
+          <% else %>
+            <td><%= cat.send(thing) %></td>
+          <% end %>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>

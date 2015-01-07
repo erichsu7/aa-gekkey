@@ -1,0 +1,18 @@
+<h1>Rentals</h1>
+
+  <% attrs = [:cat_id, :start_date, :end_date, :status] %>
+  <table>
+    <tr>
+      <% attrs.each do |thing| %>
+        <td><b><%= thing.to_s.capitalize %></b></td>
+      <% end %>
+    </tr>
+    <% @cat_rentals.each do |rental| %>
+      <tr>
+        <% attrs.each do |thing| %>
+          <td><%= rental.send(thing) %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+  <%= link_to "create", :new_cat_rental %>

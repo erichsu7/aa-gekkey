@@ -1,0 +1,21 @@
+<h1><%= @cat.name %></h1>
+
+<p><%= @cat.age %> years old, <%= @cat.color %>, <%= @cat.sex %> cat.</p>
+<p><%= @cat.description %></p>
+
+<p>
+  <li>
+    <% @cat.cat_rental_requests.each do |r| %>
+      <% next if r.status != "PENDING" %>
+      <ul>
+        From: <%= r.start_date %>, to: <%= r.end_date %>
+        <form method='post' action="<%= approve_url(r)%>">
+          <input value = 'Approve' type='submit'>
+        </form>
+        <form method='post' action="<%= deny_url(r) %>">
+          <input value = 'Deny' type='submit'>
+        </form>
+      </ul>
+    <% end %>
+  </li>
+</p>
