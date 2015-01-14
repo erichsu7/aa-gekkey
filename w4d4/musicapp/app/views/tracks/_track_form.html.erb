@@ -1,0 +1,22 @@
+<input type="hidden" name="authenticity_token"
+	value="<%= form_authenticity_token %>">
+
+<label for="name">Name:</label>
+<input type="text" name="track[name]" value="<%= @track.name %>" id="name">
+
+<input type="radio" value="false" name="track[bonus]"
+	<%= @track.bonus ? '' : 'checked' %>>
+	Regular
+</input>
+<input type="radio" value="true" name="track[bonus]"
+	<%= @track.bonus ? 'checked' : '' %>>
+	Bonus
+</input>
+<br>
+
+<label for="lyrics">Lyrics</label><br>
+<textarea name="track[lyrics]" id="lyrics"><%= @track.lyrics %></textarea>
+
+<input type="hidden" name="album_id" value="<%= @album && @album.id %>">
+<br>
+

@@ -1,0 +1,15 @@
+c'est ne pas l'indice des artistes
+
+<h2>Artists</h2>
+<ul>
+	<% @artists.each do |a| %>
+		<li>
+			<%= link_to a.name, artist_url(a) %>
+			<%= link_to "edit", edit_album_url(a) %>
+			<%= link_to "delete(!)", album_url(a), method: :delete %>
+		</li>
+	<% end %>
+	<li style="list-style-type: none; text-indent: -1em;">
+		<%= link_to "new artist", new_artist_url %>
+	</li>
+</ul>

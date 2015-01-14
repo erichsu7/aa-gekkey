@@ -1,0 +1,7 @@
+<h2>Edit Album</h2>
+
+<form action="<%= album_url(@album) %>" method="post" accept-charset="utf-8">
+	<input type="hidden" name="_method" value="patch">
+	<%= render "album_form" %>
+	<input type="submit" value="edit">
+</form>

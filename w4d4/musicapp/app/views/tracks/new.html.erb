@@ -1,0 +1,7 @@
+<h2>New Track</h2>
+
+<form action="/tracks" method="post" accept-charset="utf-8">
+	<%= render "track_form" %>
+	<input type="submit" value="create">
+	<%= link_to "cancel", album_url(@album) %>
+</form>

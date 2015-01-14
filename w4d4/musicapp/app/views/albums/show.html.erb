@@ -1,0 +1,15 @@
+<%= render "layouts/header", obj: @album %>
+
+<h2><%= @album.artist.name %> - <%= @album.name %></h2>
+<%= link_to "edit", edit_album_url(@album) %>
+<%= link_to "delete(!)", album_url(@album), method: :delete %>
+
+<h3>Tracks</h3>
+<ul>
+	<% @album.tracks.each do |a| %>
+		<li><%= link_to a.name, track_url(a) %></li>
+	<% end %>
+	<li style="list-style-type: none; text-indent: -1em;">
+		<%= link_to "new", new_album_track_url(@album) %>
+	</li>
+</ul>

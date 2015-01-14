@@ -1,0 +1,9 @@
+<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+
+<label for="username">Email</label>
+<input type="text" name="user[email]" value="<%= @user.email %>" id="username">
+<br>
+
+<label for="password">Password</label>
+<input type="password" name="user[password]" value="<%= @user.password %>" id="password">
+<br>

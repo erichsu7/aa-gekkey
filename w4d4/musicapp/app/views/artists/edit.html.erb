@@ -1,0 +1,12 @@
+<h2>Edit Artist</h2>
+
+<form action="<%= artist_url(@artist) %>" method="post" accept-charset="utf-8">
+	<input type="hidden" name="_method" value="patch">
+	<input type="hidden" name="authenticity_token"
+		value="<%= form_authenticity_token %>">
+	<label for="name">Name:</label>
+	<input type="text" name="artist[name]" value="<%= @artist.name %>" id="name">
+
+	<input type="submit" value="edit">
+	<%= link_to "cancel", artist_url(@artist) %>
+</form>

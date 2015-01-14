@@ -1,0 +1,19 @@
+<%= render "layouts/header", obj: @track %>
+
+<h2><%= @track.artist.name %> - <%= @track.album.name %> - <%= @track.name %></h2>
+<%= link_to "edit", edit_track_url(@track) %>
+<%= link_to "delete(!)", track_url(@track), method: :delete %>
+
+<h3>Lyrics</h3>
+<p style="white-space: pre-wrap;"><%= uglify(@track.lyrics) %></p>
+
+<h3>Notes</h3>
+<% @track.notes.each do |n| %>
+	<%= n.user.email %>:<br>
+	<%= n.body %><br>
+	<%= if current_user && n.user.id == current_user.id
+			button_to "delete", {controller: "notes", action: "destroy",
+						note_id: n.id}, method: "delete"
+		end %><br>
+<% end %>
+<%= render "notes/form", track_id: @track.id %>

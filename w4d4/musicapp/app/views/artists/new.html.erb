@@ -1,0 +1,11 @@
+<h2>New Artist</h2>
+
+<form action="/artists" method="post" accept-charset="utf-8">
+	<input type="hidden" name="authenticity_token"
+		value="<%= form_authenticity_token %>">
+	<label for="name">Name:</label>
+	<input type="text" name="artist[name]" value="" id="name">
+
+	<input type="submit" value="create">
+	<%= link_to "cancel", artists_url %>
+</form>

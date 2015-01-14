@@ -1,0 +1,8 @@
+<h2>Edit Track</h2>
+
+<form action="<%= track_url(@track) %>" method="post" accept-charset="utf-8">
+	<input type="hidden" name="_method" value="patch">
+	<%= render "track_form" %>
+	<input type="submit" value="edit">
+	<%= link_to "cancel", track_url(@track) %>
+</form>

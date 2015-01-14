@@ -1,0 +1,19 @@
+<input type="hidden" name="authenticity_token"
+	value="<%= form_authenticity_token %>">
+
+<label for="name">Name:</label>
+<input type="text" name="album[name]" value="<%= @album.name %>" id="name">
+
+<input type="radio" value="false" name="album[live]"
+	<%= @album.live ? '' : 'checked' %>>
+	Studio
+</input>
+<input type="radio" value="true" name="album[live]"
+	<%= @album.live ? 'checked' : '' %>>
+	Live
+</input>
+
+<input type="hidden" name="artist_id" value="<%= @artist ? @artist.id : '' %>">
+<br>
+
+<%= link_to "cancel", artist_url(@artist) if @artist %>
